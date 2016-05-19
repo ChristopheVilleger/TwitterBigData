@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use TwitterAPIExchange;
 
@@ -30,18 +31,36 @@ class DefaultController extends Controller
         );
 
         $url = 'https://api.twitter.com/1.1/search/tweets.json';
-
-        $getfield = '?count=100&q=%23' . $q;
         $requestMethod = 'GET';
-
+        $getfield = '?count=100&result_type=mixed&q=%23' . $q;
         $twitter = new TwitterAPIExchange($settings);
 
-        $resp = json_decode($twitter->setGetfield($getfield)
-            ->buildOauth($url, $requestMethod)
-            ->performRequest(),$assoc = TRUE);
+        $tweets = array();
+        $i = 0;
+        foreach(range(0,9) as $i){
+            $i++;
+            $resp = json_decode($twitter->setGetfield($getfield)
+                ->buildOauth($url, $requestMethod)
+                ->performRequest(),$assoc = TRUE);
+
+            $statuses = $resp['statuses'];
+
+            foreach($statuses as $status){
+                $tweets[] = $status;
+            }
+            if(isset($resp['search_metadata']['next_results'])){
+                $getfield = $resp['search_metadata']['next_results'];
+            }else{
+                break;
+            }
+        }
+
+        $fs = new Filesystem();
+        $fs->dumpFile('/var/www/public/twitterbigdata/newTest.json', json_encode($tweets));
+
 
         return $this->render('default/search.html.twig', [
-            'resp' => $resp
+            'tweets' => json_encode($tweets)
         ]);
     }
 }
