@@ -23,15 +23,15 @@ class DefaultController extends Controller
         }
 
         $settings = array(
-            'oauth_access_token' => "630733550-nvIuANoKVx4XuY0NVuucosKhlpFfWLGZ2MVKoIXG",
-            'oauth_access_token_secret' => " O7wOcUs6pjgECPJ6ns532ARk0oAGo85MRceOArjWnlxCy",
-            'consumer_key' => "YjlJasQ7OLNyFgkGs1QSCmG70",
-            'consumer_secret' => "OfsKYPGmqnzEpKHuLUEetcSidcNrSltkW8E4cSZLNTieTA5ZGA"
+            'oauth_access_token' => "",
+            'oauth_access_token_secret' => "",
+            'consumer_key' => "",
+            'consumer_secret' => ""
         );
 
         $url = 'https://api.twitter.com/1.1/search/tweets.json';
 
-        $getfield = '?q=' . $q;
+        $getfield = '?count=100&q=%23' . $q;
         $requestMethod = 'GET';
 
         $twitter = new TwitterAPIExchange($settings);
