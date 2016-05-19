@@ -3,7 +3,9 @@
 {% block body %}
     <div id="wrapper">
         <div id="container">
-            {{ dump(resp) }}
+            {% for res in resp %}
+                {{ dump(res) }}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

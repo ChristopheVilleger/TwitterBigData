@@ -23,10 +23,10 @@ class DefaultController extends Controller
         }
 
         $settings = array(
-            'oauth_access_token' => "",
-            'oauth_access_token_secret' => "",
-            'consumer_key' => "",
-            'consumer_secret' => ""
+            'oauth_access_token' => $this->getParameter('oauth_access_token'),
+            'oauth_access_token_secret' => $this->getParameter('oauth_access_token_secret'),
+            'consumer_key' => $this->getParameter('consumer_key'),
+            'consumer_secret' => $this->getParameter('consumer_secret')
         );
 
         $url = 'https://api.twitter.com/1.1/search/tweets.json';
@@ -35,9 +35,10 @@ class DefaultController extends Controller
         $requestMethod = 'GET';
 
         $twitter = new TwitterAPIExchange($settings);
-        $resp = $twitter->setGetfield($getfield)
+
+        $resp = json_decode($twitter->setGetfield($getfield)
             ->buildOauth($url, $requestMethod)
-            ->performRequest();
+            ->performRequest(),$assoc = TRUE);
 
         return $this->render('default/search.html.twig', [
             'resp' => $resp
